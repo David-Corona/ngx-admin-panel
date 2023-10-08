@@ -1,6 +1,6 @@
 import { ModuleWithProviders, NgModule, Optional, SkipSelf } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NbAuthModule, NbDummyAuthStrategy } from '@nebular/auth';
+import { NbAuthModule, NbDummyAuthStrategy, NbPasswordAuthStrategy } from '@nebular/auth';
 import { NbSecurityModule, NbRoleProvider } from '@nebular/security';
 import { of as observableOf } from 'rxjs';
 
@@ -53,23 +53,23 @@ import { VisitorsAnalyticsService } from './mock/visitors-analytics.service';
 import { SecurityCamerasService } from './mock/security-cameras.service';
 import { MockDataModule } from './mock/mock-data.module';
 
-const socialLinks = [
-  {
-    url: 'https://github.com/akveo/nebular',
-    target: '_blank',
-    icon: 'github',
-  },
-  {
-    url: 'https://www.facebook.com/akveo/',
-    target: '_blank',
-    icon: 'facebook',
-  },
-  {
-    url: 'https://twitter.com/akveo_inc',
-    target: '_blank',
-    icon: 'twitter',
-  },
-];
+// const socialLinks = [
+//   {
+//     url: 'https://github.com/akveo/nebular',
+//     target: '_blank',
+//     icon: 'github',
+//   },
+//   {
+//     url: 'https://www.facebook.com/akveo/',
+//     target: '_blank',
+//     icon: 'facebook',
+//   },
+//   {
+//     url: 'https://twitter.com/akveo_inc',
+//     target: '_blank',
+//     icon: 'twitter',
+//   },
+// ];
 
 const DATA_SERVICES = [
   { provide: UserData, useClass: UserService },
@@ -106,18 +106,28 @@ export const NB_CORE_PROVIDERS = [
   ...NbAuthModule.forRoot({
 
     strategies: [
-      NbDummyAuthStrategy.setup({
+      // https://akveo.github.io/nebular/docs/auth/nbpasswordauthstrategy
+      NbPasswordAuthStrategy.setup({
         name: 'email',
-        delay: 3000,
+        baseEndpoint: 'http://localhost:3000/api', // TODO - Change for env
+        login: {
+          endpoint: '/auth/login',
+          method: 'post',
+        },
+        register: {
+          endpoint: '/auth/registro',
+          method: 'post',
+        },
       }),
     ],
+
     forms: {
-      login: {
-        socialLinks: socialLinks,
-      },
-      register: {
-        socialLinks: socialLinks,
-      },
+      // login: {
+      //   socialLinks: socialLinks,
+      // },
+      // register: {
+      //   socialLinks: socialLinks,
+      // },
     },
   }).providers,
 
